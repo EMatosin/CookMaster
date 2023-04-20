@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2023-03-13" view-index="0" gantt-divider-location="727" resource-divider-location="300" version="3.2.3247" locale="fr_FR">
+    <description/>
+    <view zooming-state="default:4" id="gantt-chart">
+        <field id="tpd3" name="Nom" width="415" order="0"/>
+        <field id="tpd4" name="Date de début" width="155" order="1"/>
+        <field id="tpd5" name="Date de fin" width="156" order="2"/>
+        <option id="filter.completedTasks" value="false"/>
+        <option id="color.recent">
+            <![CDATA[#ff6666 #666666 #ffff66 #f0f0f0 #33ff66 #ff0000 #0033ff]]>
+        </option>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Nom" width="211" order="0"/>
+        <field id="1" name="Rôle par défaut" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="24" name="Partie Développement WEB" meeting="false" start="2023-03-20" duration="20" complete="0" expand="true">
+            <task id="12" name="Schéma de la BDD" color="#ff6666" meeting="false" start="2023-03-20" duration="20" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="6" name="Chiffrage financier de la partie développement" color="#ff6666" meeting="false" start="2023-03-20" duration="20" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="10" name="Charte graphique" color="#ff6666" meeting="false" start="2023-03-20" duration="20" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="11" name="Maquette de l'application WEB" color="#ff6666" meeting="false" start="2023-03-20" duration="20" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="25" name="Partie Développement Applicatif" meeting="false" start="2023-03-20" duration="20" complete="0" expand="false">
+            <task id="15" name="Programme de test sur l'utilisation de Curl avec accès à une BDD" color="#33ff66" meeting="false" start="2023-03-20" duration="20" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="14" name="Descriptif fonctionnel détaillé et numéroté de la partie Application Web" color="#33ff66" meeting="false" start="2023-03-20" duration="20" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="13" name="Descriptif fonctionnel détaillé et numéroté de la partie C" color="#33ff66" meeting="false" start="2023-03-20" duration="20" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="26" name="Partie Réseau" meeting="false" start="2023-03-20" duration="20" complete="0" expand="false">
+            <task id="3" name="Tests de l'infra en LAN et en WAN (exigences fonctionnelles et de performance définies)" color="#8cb6ce" meeting="false" start="2023-03-20" duration="20" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="2" name="Installation et configuration (typologies et protocoles utilisés)" color="#8cb6ce" meeting="false" start="2023-03-20" duration="20" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="1" name="Choix du matériel et des logiciels (physiques et technos)" color="#8cb6ce" meeting="false" start="2023-03-20" duration="20" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="0" name="Schéma réseau ( packet tracer )" color="#8cb6ce" meeting="false" start="2023-03-20" duration="20" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="27" name="Partie Commune" meeting="false" start="2023-03-16" duration="22" complete="0" expand="false">
+            <task id="21" name="Présentation des règles du projet" color="#ffff66" meeting="false" start="2023-03-16" duration="1" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="22" name="Explication du sujet" color="#ffff66" meeting="false" start="2023-03-16" duration="1" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="17" name="Constitution et validation des groupes" color="#ffff66" meeting="false" start="2023-03-16" duration="1" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="18" name="Désignation du responsable Réseau" color="#ffff66" meeting="false" start="2023-03-16" duration="1" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="20" name="Désignation du responsable Applicatif" color="#ffff66" meeting="false" start="2023-03-16" duration="1" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="19" name="Désignation du responsable Développement WEB" color="#ffff66" meeting="false" start="2023-03-16" duration="1" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="8" name="Création Trello" color="#ffff66" meeting="false" start="2023-03-17" duration="1" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="4" name="Création dépot GITHUB" color="#ffff66" meeting="false" start="2023-03-17" duration="1" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="5" name="Ajouter monsieur Sananes au GITHUB" color="#ffff66" meeting="false" start="2023-03-17" duration="1" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="23" name="Planification des différentes tâches à réaliser" color="#ffff66" meeting="false" start="2023-03-20" duration="1" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="7" name="Fixation nom projet" color="#ffff66" meeting="false" start="2023-03-21" duration="19" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="9" name="Fixation logo projet" color="#ffff66" meeting="false" start="2023-03-21" duration="19" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+            <task id="16" name="Création d'un diagramme de GANTT" color="#ffff66" meeting="false" start="2023-03-21" duration="19" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="28" name="Partie Sécurité" color="#666666" meeting="false" start="2023-04-07" duration="1" complete="0" thirdDate="2023-04-07" thirdDate-constraint="0" expand="true"/>
+    </tasks>
+    <resources/>
+    <allocations/>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+    <roles roleset-name="SoftwareDevelopment"/>
+</project>
