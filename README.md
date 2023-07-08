@@ -13,4 +13,15 @@ Android :
     - Sur l'un des fragments se situe une LIstView qui permet l'affichage de quelques aliments et une description plus complète de ceux ci lors d'une interaction (a répéter sur les autres fragments avcec par exemple une ListView pour les différents locaux proposés, les différents chefs disponibles etc..)
  
 - NFC en cours avec  MF2A et/ou fidélisation via tampons 
-- Ajout d'une fonctionnalité pour prendre en photo et upload une image (par exemple upload un plat et le save qq part ou bien upload des documents administratifs tel que un certificat pour prouver l'authenticité du diplome d'un chef cuisinier...)  
+- Ajout d'une fonctionnalité pour prendre en photo et upload une image (par exemple upload un plat et le save qq part ou bien upload des documents administratifs tel que un certificat pour prouver l'authenticité du diplome d'un chef cuisinier...)
+
+Java :
+
+- Classes principales crées contenant de nombreuses spécificitées
+- Génération de PDF aléatoires via listes crées en amont pour différents utilisateurs avec de nombreuses spécificités (devis, facture, evenement, abonnement etc...) avec la librairie iTextPdf
+- Génération de différents charts via la librarie JFreeChart
+
+
+- Organiser mieux les pdf
+- Rajouter des détails dans chaque classes (30 variables selon l'énoncé)
+- Essayer de relier le code à une bdd pour récupérer au moins une liste réelle d'utilisateur (mais garder les autres données en aléatoire)
