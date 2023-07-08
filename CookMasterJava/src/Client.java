@@ -6,18 +6,9 @@ public class Client {
     private List<Abonnement> abonnements;
     private List<Devis> devis;
     private List<Facture> factures;
-
     private int fidelite;
 
-    // Autres attributs pertinents
-
-    public Client() {
-        // Constructeur par défaut
-    }
-
-    public String getNom() {
-        return nom;
-    }
+    public String getNom() { return nom; }
 
     public void setNom(String nom) {
         this.nom = nom;
@@ -55,14 +46,9 @@ public class Client {
         this.factures = factures;
     }
 
+    public int getFidelite() { return fidelite; }
 
-    public int getFidelite() {
-        return fidelite;
-    }
-
-    public void setFidelite(int fidelite) {
-        this.fidelite = fidelite;
-    }
+    public void setFidelite(int fidelite) { this.fidelite = fidelite; }
 
     // Autres méthodes getters et setters pour les attributs pertinents
 }

@@ -1,7 +1,11 @@
+import java.time.LocalDate;
+
 public class Abonnement {
     private String type;
     private int duree; // Durée de l'abonnement en mois
     private double cout; // Coût de l'abonnement
+    private LocalDate dateDebut;
+
     // Autres attributs pertinents
 
     public Abonnement() {
@@ -30,6 +34,15 @@ public class Abonnement {
 
     public void setCout(double cout) {
         this.cout = cout;
+    }
+
+
+    public LocalDate getDateDebut() {
+        return dateDebut;
+    }
+
+    public void setDateDebut(LocalDate dateDebut) {
+        this.dateDebut = dateDebut;
     }
 
     // Autres méthodes getters et setters pour les attributs pertinents
