@@ -25,8 +25,8 @@ Java :
 
 A FAIRE
 
-- Organiser mieux les pdf
-- Rajouter des détails dans chaque classes (30 variables selon l'énoncé)
+- Organiser mieux les pdf --> DONE
+- Rajouter des détails dans chaque classes (30 variables selon l'énoncé) --> DONE via Jar FAKER 
 - Essayer de relier le code à une bdd pour récupérer au moins une liste réelle d'utilisateur (mais garder les autres données en aléatoire)
 
 
