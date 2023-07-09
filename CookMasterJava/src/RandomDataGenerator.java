@@ -1,18 +1,22 @@
 import com.github.javafaker.Faker;
 
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.time.LocalDate;
 
 
 public class RandomDataGenerator {
 
-    private static Faker faker = new Faker();
+    private static final Faker faker = new Faker();
     private static final Random random = new Random();
+
+
+
+
+    // Génération des données aléatoires pour les informations des clients
+
+
 
     public static List<Client> generateRandomClients(int count) {
         List<Client> clients = new ArrayList<>();
@@ -25,9 +29,8 @@ public class RandomDataGenerator {
             client.setNom(randomNames.get(i));
             client.setAdresse(randomAddresses.get(i));
             client.setAbonnements(generateRandomAbonnements());
-            client.setDevis(generateRandomDevis());
             client.setFactures(generateRandomFactures());
-            // Autres attributs pertinents
+            //client.setPrestations(RandomDataGenerator.generateRandomPrestations());
 
             clients.add(client);
         }
@@ -52,6 +55,13 @@ public class RandomDataGenerator {
         }
         return addresses;
     }
+
+
+
+
+    // Génération des données aléatoires pour les différents abonnements
+
+
 
     static List<Abonnement> generateRandomAbonnements() {
         List<Abonnement> abonnements = new ArrayList<>();
@@ -89,17 +99,12 @@ public class RandomDataGenerator {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
-    static List<Devis> generateRandomDevis() {
-        List<Devis> devis = new ArrayList<>();
 
-        Devis devisItem = new Devis();
-        devisItem.setMontant(generateRandomMontant());
-        // Autres attributs pertinents
 
-        devis.add(devisItem);
 
-        return devis;
-    }
+    // Génération des données aléatoires pour les factures
+
+
 
     private static double generateRandomMontant() {
         double minMontant = 100.0;
@@ -119,9 +124,16 @@ public class RandomDataGenerator {
         return factures;
     }
 
+
+
+
+    // Génération des données aléatoires pour les différents évènements
+
+
+
     public static List<Evenement> generateRandomEvenement() {
         List<Evenement> events = new ArrayList<>();
-        int numEventTypes = random.nextInt(3) + 1; // Génère un nombre aléatoire entre 1 et 3
+        int numEventTypes = random.nextInt(3) + 1;
 
         for (int i = 0; i < numEventTypes; i++) {
             Evenement evenement = new Evenement();
@@ -192,15 +204,12 @@ public class RandomDataGenerator {
 
         for (int i = 0; i < numReservations; i++) {
             Reservation reservation = new Reservation();
-            String content = "";
-
-            if (eventType.equals("Entretien VIP")) {
-                content = generateRandomVIP();
-            } else if (eventType.equals("Cours à domicile") || eventType.equals("Cours/Stream collectif")) {
-                content = generateRandomEventContent();
-            } else if (eventType.equals("Dégustation/Activité en plein air")) {
-                content = generateRandomEventLocalContent();
-            }
+            String content = switch (eventType) {
+                case "Entretien VIP" -> generateRandomVIP();
+                case "Cours à domicile", "Cours/Stream collectif" -> generateRandomEventContent();
+                case "Dégustation/Activité en plein air" -> generateRandomEventLocalContent();
+                default -> "";
+            };
 
             reservation.setContenu(content);
             reservations.add(reservation);
@@ -209,15 +218,27 @@ public class RandomDataGenerator {
         return reservations;
     }
 
-    public static List<Prestation> generateRandomPrestations(int count) {
-        List<Prestation> prestations = new ArrayList<>();
 
-        for (int i = 0; i < count; i++) {
+
+
+    // Génération des données aléatoires pour les prestations
+
+
+
+    public static List<Prestation> generateRandomPrestations() {
+        List<Prestation> prestations = new ArrayList<>();
+        int numPrestations = random.nextInt(3) + 1; // Génère un nombre aléatoire entre 1 et 3
+
+        for (int i = 0; i < numPrestations; i++) {
             Prestation prestation = new Prestation();
-            prestation.setNom(faker.lorem().word());
             prestation.setType(generateRandomPrestationType());
-            prestation.setCout(generateRandomPrestationCout());
-            // Autres attributs pertinents
+
+            switch (prestation.getType()) {
+                case "Salles" -> prestation.setDetails(generateRandomSalleDetails());
+                case "Nourriture" -> prestation.setDetails(generateRandomFoodDetails());
+                case "Traiteur" -> prestation.setDetails(generateRandomTraiteurDetails());
+                case "Animation" -> prestation.setDetails(generateRandomAnimationDetails());
+            }
 
             prestations.add(prestation);
         }
@@ -226,18 +247,93 @@ public class RandomDataGenerator {
     }
 
     private static String generateRandomPrestationType() {
-        // Ajouter ici la logique pour générer un type de prestation aléatoire
-        // Exemple :
-        String[] types = {"Type 1", "Type 2", "Type 3"};
+        String[] types = {"Salles", "Nourriture", "Traiteur", "Animation"};
         int index = random.nextInt(types.length);
         return types[index];
     }
 
-    private static double generateRandomPrestationCout() {
-        // Ajouter ici la logique pour générer un coût de prestation aléatoire
-        // Exemple :
-        double minCout = 100.0;
-        double maxCout = 1000.0;
-        return minCout + (maxCout - minCout) * random.nextDouble();
+    private static String generateRandomSalleDetails() {
+        String[] salleTypes = {"Cuisine de restaurant", "Plein air", "Salle de réception", "Salle de formation",
+                "Cuisine d'hôtel", "Cave à vin", "Salle de dégustation", "Salle de banquet",
+                "Salle de démonstration culinaire", "Terrasse avec vue panoramique"};
+        int index = random.nextInt(salleTypes.length);
+        String salleType = salleTypes[index];
+
+        int capacity = random.nextInt(20) + 1;
+
+        String[] equipment = {"Four à pierre", "Robot cuisinier", "Marmite en or", "Moule gigantesque",
+                "Machine barbe à papa", "Plancha", "Friteuse industrielle", "Machine à glace", "Mixeur professionnel",
+                "Presse-agrumes"};
+        Set<String> availableEquipment = new HashSet<>();
+        int numEquipment = random.nextInt(equipment.length) + 1;
+        while (availableEquipment.size() < numEquipment) {
+            int equipmentIndex = random.nextInt(equipment.length);
+            availableEquipment.add(equipment[equipmentIndex]);
+        }
+
+        String[] services = {"Service de restauration", "Service de café", "Service de pâtisserie",
+                "Service de sommellerie", "Service de décoration de table", "Service de gestion des stocks",
+                "Service de nettoyage de cuisine", "Service de conseil en menu"};
+        Set<String> additionalServices = new HashSet<>();
+        int numServices = random.nextInt(services.length) + 1;
+        while (additionalServices.size() < numServices) {
+            int serviceIndex = random.nextInt(services.length);
+            additionalServices.add(services[serviceIndex]);
+        }
+
+        StringBuilder details = new StringBuilder();
+        details.append("Type de salle : ").append(salleType).append("\n");
+        details.append("Capacité : ").append(capacity).append(" personnes").append("\n");
+
+        details.append("Équipements disponibles : ");
+        int i = 0;
+        for (String equipmentItem : availableEquipment) {
+            details.append(equipmentItem);
+            if (i < availableEquipment.size() - 1) {
+                details.append(", ");
+            }
+            i++;
+        }
+        details.append("\n");
+
+
+        details.append("Services supplémentaires : ");
+        i = 0;
+        for (String serviceItem : additionalServices) {
+            details.append(serviceItem);
+            if (i < additionalServices.size() - 1) {
+                details.append(", ");
+            }
+            i++;
+        }
+        details.append("\n");
+
+        return details.toString();
+    }
+
+    private static String generateRandomFoodDetails() {
+        String[] foodTypes = {"Fruits exotiques", "Viandes de choix", "Poisson frais", "Légumes confits",
+                "Fromages raffinés", "Desserts gourmands", "Plats végétariens", "Spécialités régionales",
+                "Plats épicés", "Produits biologiques"};
+        int index = random.nextInt(foodTypes.length);
+        String foodType = foodTypes[index];
+        return "Type de nourriture : " + foodType + "\n";
+    }
+
+    private static String generateRandomTraiteurDetails() {
+        String[] serviceTypes = {"Cocktail", "Buffet", "Menu à la carte", "Table d'hôte", "Service à l'assiette",
+                "Food truck", "Service traiteur", "Brunch", "Bar à cocktails", "Service de dégustation"};
+        int index = random.nextInt(serviceTypes.length);
+        String serviceType = serviceTypes[index];
+        return "Type de service : " + serviceType + "\n";
+    }
+
+    private static String generateRandomAnimationDetails() {
+        String[] animationTypes = {"Challenges en duo!", "Thème spécial!", "Duel entre novices!",
+                "Ingrédients surprises!", "Atelier de dégustation", "Démonstration culinaire",
+                "Concours de cuisine", "Animation musicale", "Soirée à thème", "Spectacle de chefs cuisiniers"};
+        int index = random.nextInt(animationTypes.length);
+        String animationType = animationTypes[index];
+        return "Type d'animation : " + animationType + "\n";
     }
 }

@@ -1,17 +1,13 @@
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 
 public class Abonnement {
     private String type;
-    private int duree; // Durée de l'abonnement en mois
-    private int cout; // Coût de l'abonnement
+    private int duree;
+    private int cout;
     private LocalDate dateDebut;
 
-    // Autres attributs pertinents
 
-    public Abonnement() {
-        // Constructeur par défaut
-    }
+    public Abonnement() {}
 
     public String getType() {
         return type;
@@ -36,6 +32,7 @@ public class Abonnement {
     public void setCout(int cout) {
         this.cout = cout;
     }
+
     public int calculerCoutAbonnement() {
         String typeAbonnement = getType();
         int dureeAbonnement = getDuree();
@@ -53,9 +50,6 @@ public class Abonnement {
         setCout(prixUnitaire * dureeAbonnement);
         return getCout();
     }
-
-
-
 
     public LocalDate getDateDebut() {
         return dateDebut;

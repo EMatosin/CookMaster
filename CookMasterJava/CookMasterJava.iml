@@ -35,5 +35,6 @@
         <jarDirectory url="file://$USER_HOME$/Downloads/jar_files" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="OpenJFX 11" level="application" />
   </component>
 </module>

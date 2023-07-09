@@ -4,10 +4,11 @@ public class Client {
     private String nom;
     private String adresse;
     private List<Abonnement> abonnements;
-    private List<Devis> devis;
     private List<Facture> factures;
     private int fidelite;
     private List<Evenement> evenements;
+    private List<Prestation> prestations;
+
 
 
     public String getNom() { return nom; }
@@ -30,14 +31,6 @@ public class Client {
         this.abonnements = abonnements;
     }
 
-    public List<Devis> getDevis() {
-        return devis;
-    }
-
-    public void setDevis(List<Devis> devis) {
-        this.devis = devis;
-    }
-
     public List<Facture> getFactures() {
         return factures;
     }
@@ -56,6 +49,14 @@ public class Client {
 
     public void setEvenements(List<Evenement> evenements) {
         this.evenements = evenements;
+    }
+
+    public List<Prestation> getPrestations() {
+        return prestations;
+    }
+
+    public void setPrestations(List<Prestation> prestations) {
+        this.prestations = prestations;
     }
 
 }

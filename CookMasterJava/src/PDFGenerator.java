@@ -31,7 +31,7 @@ public class PDFGenerator {
                 addClientInfoPage(document, client);
                 addAbonnementsPage(document, client);
                 addClientEvents(document, client);
-                addDevisPage(document, client);
+                addClientPrestations(document,client);
                 addFacturesPage(document, client);
                 addFooter(writer);
                 document.newPage();
@@ -70,6 +70,20 @@ public class PDFGenerator {
         document.add(Chunk.NEWLINE);
     }
 
+    private static void addFooter(PdfWriter writer) throws DocumentException, IOException {
+        PdfContentByte cb = writer.getDirectContent();
+
+        // Ajoutez le logo
+        Image logo = Image.getInstance("C:\\Users\\emato\\OneDrive\\Bureau\\CookFusionPdf\\aklogo.png");
+        logo.scaleToFit(80, 80);
+        logo.setAbsolutePosition((writer.getPageSize().getWidth() - logo.getScaledWidth()) / 2, 40);
+        cb.addImage(logo);
+
+        // Ajoutez le commentaire
+        Phrase phrase = new Phrase("Délivré par CookFusion - Votre partenaire culinaire de confiance pour des expériences gastronomiques uniques.", FontFactory.getFont(FontFactory.HELVETICA, 10));
+        ColumnText.showTextAligned(cb, Element.ALIGN_CENTER, phrase, writer.getPageSize().getWidth() / 2, 20, 0);
+    }
+
 
 
 
@@ -104,19 +118,8 @@ public class PDFGenerator {
 
     }
 
-    private static void addDevisPage(Document document, Client client) throws DocumentException {
-        Paragraph title = new Paragraph("Devis du client", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14));
-        document.add(title);
-        document.add(Chunk.NEWLINE);
 
 
-        List<Devis> devis = client.getDevis();
-        for (Devis devisClient : devis) {
-            document.add(new Paragraph("Montant du devis : " + devisClient.getMontant()));
-
-            document.add(Chunk.NEWLINE);
-        }
-    }
 
     private static void addFacturesPage(Document document, Client client) throws DocumentException {
         Paragraph title = new Paragraph("Factures du client", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14));
@@ -132,19 +135,8 @@ public class PDFGenerator {
         }
     }
 
-    private static void addFooter(PdfWriter writer) throws DocumentException, IOException {
-        PdfContentByte cb = writer.getDirectContent();
 
-        // Ajoutez le logo
-        Image logo = Image.getInstance("C:\\Users\\emato\\OneDrive\\Bureau\\CookFusionPdf\\aklogo.png");
-        logo.scaleToFit(80, 80);
-        logo.setAbsolutePosition((writer.getPageSize().getWidth() - logo.getScaledWidth()) / 2, 40);
-        cb.addImage(logo);
 
-        // Ajoutez le commentaire
-        Phrase phrase = new Phrase("Délivré par CookFusion - Votre partenaire culinaire de confiance pour des expériences gastronomiques uniques.", FontFactory.getFont(FontFactory.HELVETICA, 10));
-        ColumnText.showTextAligned(cb, Element.ALIGN_CENTER, phrase, writer.getPageSize().getWidth() / 2, 20, 0);
-    }
 
     private static void addClientEvents(Document document, Client client) throws DocumentException {
         Paragraph title = new Paragraph("Événements choisis", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12));
@@ -160,13 +152,12 @@ public class PDFGenerator {
             eventDetails.add(Chunk.NEWLINE);
 
             if (event.getType().equals("Entretien(s) VIP")) {
-                String vip = event.getContenu();
                 eventDetails.add(new Chunk("Nom du VIP choisi: ", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
                 eventDetails.add(new Chunk(event.getNom(), FontFactory.getFont(FontFactory.HELVETICA)));
                 eventDetails.add(Chunk.NEWLINE);
             }
 
-            if (!event.getType().equals("Entretien VIP")) {
+            if (!event.getType().equals("Entretien(s) VIP")) {
                 List<Reservation> reservations = event.getReservations();
                 if (reservations != null && !reservations.isEmpty()) {
                     eventDetails.add(new Chunk("Réservations pour les activités suivantes: ", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
@@ -187,22 +178,30 @@ public class PDFGenerator {
     }
 
 
+    private static void addClientPrestations(Document document, Client client) throws DocumentException {
+        Paragraph title = new Paragraph("Prestations choisis :", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12));
+        title.setAlignment(Element.ALIGN_LEFT);
+        document.add(title);
+        document.add(Chunk.NEWLINE);
 
+        List<Prestation> prestations = client.getPrestations();
+        if (prestations != null) {
+            for (Prestation prestation : prestations) {
+                Paragraph prestationDetails = new Paragraph();
+                prestationDetails.add(new Chunk("Type : ", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+                prestationDetails.add(new Chunk(prestation.getType(), FontFactory.getFont(FontFactory.HELVETICA)));
+                prestationDetails.add(Chunk.NEWLINE);
+                prestationDetails.add(new Chunk("Détails : ", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+                prestationDetails.add(Chunk.NEWLINE);
+                prestationDetails.add(new Chunk(prestation.getDetails(), FontFactory.getFont(FontFactory.HELVETICA)));
+                prestationDetails.add(Chunk.NEWLINE);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                document.add(prestationDetails);
+            }
+        } else {
+            document.add(new Paragraph("Aucune prestation choisie."));
+        }
+    }
 
 
     private static void addClientStatisticsPage(Document document, List<Client> clients) throws DocumentException, IOException {
@@ -256,13 +255,6 @@ public class PDFGenerator {
         addChartToDocument(document, serviceEventsCountChart);
 
     }
-
-
-
-
-
-
-
 
 
 
