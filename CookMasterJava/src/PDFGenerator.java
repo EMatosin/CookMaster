@@ -15,7 +15,7 @@ import java.util.List;
 
 
 public class PDFGenerator {
-    public static void generateReport(List<Client> clients, List<Evenement> evenements,List<Prestation> prestations ) {
+    public static void generateReport(List<Client> clients) {
         Document document = new Document();
 
         try {
@@ -30,6 +30,7 @@ public class PDFGenerator {
                 addTitlePageClient(document,client);
                 addClientInfoPage(document, client);
                 addAbonnementsPage(document, client);
+                addClientEvents(document, client);
                 addDevisPage(document, client);
                 addFacturesPage(document, client);
                 addFooter(writer);
@@ -37,15 +38,12 @@ public class PDFGenerator {
             }
 
             addClientStatisticsPage(document, clients);
-            addFooter(writer);
             document.newPage();
 
-            addEventStatisticsPage(document, evenements);
-            addFooter(writer);
+            //addEventStatisticsPage(document, evenements);
             document.newPage();
 
-            addServiceStatisticsPage(document, prestations);
-            addFooter(writer);
+            //addServiceStatisticsPage(document, prestations);
             document.newPage();
 
             document.close();
@@ -72,6 +70,9 @@ public class PDFGenerator {
         document.add(Chunk.NEWLINE);
     }
 
+
+
+
     private static void addClientInfoPage(Document document, Client client) throws DocumentException {
         Paragraph title = new Paragraph("Informations du client", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14));
         document.add(title);
@@ -84,19 +85,19 @@ public class PDFGenerator {
         document.add(Chunk.NEWLINE);
     }
 
-
     private static void addAbonnementsPage(Document document, Client client) throws DocumentException {
-        Paragraph title = new Paragraph("Abonnements du client", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14));
+        Paragraph title = new Paragraph("Abonnement du client", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14));
         document.add(title);
         document.add(Chunk.NEWLINE);
 
 
         List<Abonnement> abonnements = client.getAbonnements();
         for (Abonnement abonnement : abonnements) {
+            int coutAbonnement = abonnement.calculerCoutAbonnement();
             document.add(new Paragraph("Type d'abonnement : " + abonnement.getType()));
             document.add(new Paragraph("Date de début : " + abonnement.getDateDebut()));
             document.add(new Paragraph("Durée de l'abonnement : " + abonnement.getDuree() + " mois"));
-            document.add(new Paragraph("Coût de l'abonnement : " + abonnement.getCout()));
+            document.add(new Paragraph("Coût de l'abonnement : " + coutAbonnement + "$"));
 
             document.add(Chunk.NEWLINE);
         }
@@ -145,6 +146,65 @@ public class PDFGenerator {
         ColumnText.showTextAligned(cb, Element.ALIGN_CENTER, phrase, writer.getPageSize().getWidth() / 2, 20, 0);
     }
 
+    private static void addClientEvents(Document document, Client client) throws DocumentException {
+        Paragraph title = new Paragraph("Événements choisis", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12));
+        title.setAlignment(Element.ALIGN_LEFT);
+        document.add(title);
+        document.add(Chunk.NEWLINE);
+
+        List<Evenement> events = client.getEvenements();
+        for (Evenement event : events) {
+            Paragraph eventDetails = new Paragraph();
+            eventDetails.add(new Chunk("Type : ", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+            eventDetails.add(new Chunk(event.getType(), FontFactory.getFont(FontFactory.HELVETICA)));
+            eventDetails.add(Chunk.NEWLINE);
+
+            if (event.getType().equals("Entretien(s) VIP")) {
+                String vip = event.getContenu();
+                eventDetails.add(new Chunk("Nom du VIP choisi: ", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+                eventDetails.add(new Chunk(event.getNom(), FontFactory.getFont(FontFactory.HELVETICA)));
+                eventDetails.add(Chunk.NEWLINE);
+            }
+
+            if (!event.getType().equals("Entretien VIP")) {
+                List<Reservation> reservations = event.getReservations();
+                if (reservations != null && !reservations.isEmpty()) {
+                    eventDetails.add(new Chunk("Réservations pour les activités suivantes: ", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+                    eventDetails.add(Chunk.NEWLINE);
+                    for (Reservation reservation : event.getReservations()) {
+                        eventDetails.add(new Chunk(reservation.getContenu(), FontFactory.getFont(FontFactory.HELVETICA)));
+                        eventDetails.add(Chunk.NEWLINE);
+                    }
+                }
+            }
+            eventDetails.add(new Chunk("Nombre total de réservations: ", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+            eventDetails.add(new Chunk(String.valueOf(event.getDemande()), FontFactory.getFont(FontFactory.HELVETICA)));
+            eventDetails.add(Chunk.NEWLINE);
+            eventDetails.add(Chunk.NEWLINE);
+
+            document.add(eventDetails);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private static void addClientStatisticsPage(Document document, List<Client> clients) throws DocumentException, IOException {
         Paragraph title = new Paragraph("Statistiques des comptes clients", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14));
         title.setAlignment(Element.ALIGN_CENTER);
@@ -162,8 +222,6 @@ public class PDFGenerator {
 
         JFreeChart topCustomersChart = createTopCustomersChart(clients);
         addChartToDocument(document, topCustomersChart);
-
-        document.newPage();
     }
 
     private static void addEventStatisticsPage(Document document, List<Evenement> evenements) throws DocumentException, IOException {
@@ -180,8 +238,6 @@ public class PDFGenerator {
 
         JFreeChart topRequestedEventsChart = createTopRequestedEventsChart(evenements);
         addChartToDocument(document, topRequestedEventsChart);
-
-        document.newPage();
     }
 
     private static void addServiceStatisticsPage(Document document, List<Prestation> prestations) throws DocumentException, IOException {
@@ -200,6 +256,16 @@ public class PDFGenerator {
         addChartToDocument(document, serviceEventsCountChart);
 
     }
+
+
+
+
+
+
+
+
+
+
 
     private static void addChartToDocument(Document document, JFreeChart chart) throws DocumentException, IOException {
         ByteArrayOutputStream chartImage = new ByteArrayOutputStream();

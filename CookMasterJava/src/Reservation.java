@@ -1,5 +1,11 @@
 public class Reservation {
-    // Attributs pertinents
+    private String contenu;
 
-    // Constructeur, getters et setters
+    public String getContenu() {
+        return contenu;
+    }
+
+    public void setContenu(String contenu) {
+        this.contenu = contenu;
+    }
 }

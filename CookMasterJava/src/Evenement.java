@@ -5,30 +5,46 @@ public class Evenement {
     private String nom;
     private String contenu;
     private List<Reservation> reservations;
-    private List<Planification> planifications;
     private int demande;
-
-
 
     public int getDemande() {
         return demande;
     }
+
     public void setDemande(int demande) {
         this.demande = demande;
     }
 
-    public String getNom() { return nom; }
+    public String getNom() {
+        return nom;
+    }
+
     public void setNom(String nom) {
         this.nom = nom;
     }
 
-    public void setType(String s) {
+    public String getType() {
+        return type;
     }
-    public void setFrequence(int i) {
+
+    public void setType(String type) {
+        this.type = type;
     }
 
+    public String getContenu() {
+        return contenu;
+    }
 
-    // Autres attributs pertinents
+    public void setContenu(String contenu) {
+        this.contenu = contenu;
+    }
 
-    // Constructeur, getters et setters
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
 }

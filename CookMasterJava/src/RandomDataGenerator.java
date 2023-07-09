@@ -37,7 +37,10 @@ public class RandomDataGenerator {
     public static List<String> generateRandomNames(int count) {
         List<String> names = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            names.add(faker.name().firstName());
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            String fullName = firstName + " " + lastName;
+            names.add(fullName);
         }
         return names;
     }
@@ -57,7 +60,7 @@ public class RandomDataGenerator {
         abonnement.setType(generateRandomAbonnementType());
         abonnement.setDuree(generateRandomAbonnementDuree());
         abonnement.setDateDebut(generateRandomAbonnementDate());
-        // Other relevant attributes
+        abonnement.calculerCoutAbonnement();
 
         abonnements.add(abonnement);
 
@@ -85,7 +88,6 @@ public class RandomDataGenerator {
         Date date = faker.date().past(365, TimeUnit.DAYS);
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
-
 
     static List<Devis> generateRandomDevis() {
         List<Devis> devis = new ArrayList<>();
@@ -117,20 +119,94 @@ public class RandomDataGenerator {
         return factures;
     }
 
-    public static List<Evenement> generateRandomEvenements(int count) {
-        List<Evenement> evenements = new ArrayList<>();
+    public static List<Evenement> generateRandomEvenement() {
+        List<Evenement> events = new ArrayList<>();
+        int numEventTypes = random.nextInt(3) + 1; // Génère un nombre aléatoire entre 1 et 3
 
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < numEventTypes; i++) {
             Evenement evenement = new Evenement();
-            evenement.setNom(faker.lorem().word());
-            evenement.setType(generateRandomEvenementType());
-            evenement.setFrequence(generateRandomEvenementFrequence());
-            // Autres attributs pertinents
-
-            evenements.add(evenement);
+            evenement.setNom(generateRandomVIP());
+            evenement.setType(generateRandomEventType());
+            evenement.setReservations(generateRandomReservationsForEventType(evenement.getType()));
+            evenement.setDemande(evenement.getReservations().size());
+            events.add(evenement);
         }
 
-        return evenements;
+        return events;
+    }
+
+    private static String generateRandomEventType() {
+        String[] types = {"Cours à domicile", "Dégustation/Activité en plein air", "Cours/Stream collectif", "Entretien(s) VIP"};
+        int index = random.nextInt(types.length);
+        return types[index];
+    }
+
+    private static String generateRandomVIP() {
+        String[] vip = {"Philippe Etchebest", "Cyril Lignac", "Alain Ducasse", "Gordon Ramsay", "Stephanie Le Quellec", "Guy Savoy", "Anne-Sophie Pic", "Eric Frechon"
+                , "Hélène Darroze","Ghislaine Arabian", "Pierre Gagnaire", "Thierry Marx", "Olivier Roellinger" };
+        int index = random.nextInt(vip.length);
+        return vip[index];
+    }
+
+    private static String generateRandomEventContent() {
+        String[] culinaryActivities = {
+                "Cours de cuisine italienne",
+                "Atelier de pâtisserie française",
+                "Initiation à la cuisine japonaise",
+                "Cours de mixologie",
+                "Cuisine moléculaire",
+                "Atelier de chocolaterie",
+                "Démonstration de cuisine fusion",
+                "Atelier de fabrication de sushi",
+                "Cours de cuisine végétarienne",
+                "Atelier de cuisine méditerranéenne",
+                "Cuisine asiatique : wok et sautés",
+                "Atelier de décoration de gâteaux"
+        };
+
+        int index = random.nextInt(culinaryActivities.length);
+        return culinaryActivities[index];
+    }
+
+    private static String generateRandomEventLocalContent() {
+        String[] culinaryLocalActivities = {
+                "Visite d'une cave à vin locale avec dégustation",
+                "Excursion à la ferme pour cueillir des fruits et légumes",
+                "Dîner gastronomique mettant en valeur les produits régionaux",
+                "Cours de cuisine traditionnelle de la région",
+                "Marché des producteurs locaux avec dégustation",
+                "Atelier de préparation de plats régionaux",
+                "Balade gastronomique dans les rues de la ville",
+                "Dégustation de spécialités culinaires locales",
+                "Rencontre avec un chef renommé pour une démonstration culinaire",
+                "Exploration des traditions culinaires ancestrales de la région"
+        };
+
+        int index = random.nextInt(culinaryLocalActivities.length);
+        return culinaryLocalActivities[index];
+    }
+
+    private static List<Reservation> generateRandomReservationsForEventType(String eventType) {
+        List<Reservation> reservations = new ArrayList<>();
+        int numReservations = random.nextInt(3) + 1; // Génère un nombre aléatoire entre 1 et 3
+
+        for (int i = 0; i < numReservations; i++) {
+            Reservation reservation = new Reservation();
+            String content = "";
+
+            if (eventType.equals("Entretien VIP")) {
+                content = generateRandomVIP();
+            } else if (eventType.equals("Cours à domicile") || eventType.equals("Cours/Stream collectif")) {
+                content = generateRandomEventContent();
+            } else if (eventType.equals("Dégustation/Activité en plein air")) {
+                content = generateRandomEventLocalContent();
+            }
+
+            reservation.setContenu(content);
+            reservations.add(reservation);
+        }
+
+        return reservations;
     }
 
     public static List<Prestation> generateRandomPrestations(int count) {
@@ -147,22 +223,6 @@ public class RandomDataGenerator {
         }
 
         return prestations;
-    }
-
-    private static String generateRandomEvenementType() {
-        // Ajouter ici la logique pour générer un type d'événement aléatoire
-        // Exemple :
-        String[] types = {"Type 1", "Type 2", "Type 3"};
-        int index = random.nextInt(types.length);
-        return types[index];
-    }
-
-    private static int generateRandomEvenementFrequence() {
-        // Ajouter ici la logique pour générer une fréquence d'événement aléatoire
-        // Exemple :
-        int minFrequence = 1;
-        int maxFrequence = 10;
-        return random.nextInt(maxFrequence - minFrequence + 1) + minFrequence;
     }
 
     private static String generateRandomPrestationType() {

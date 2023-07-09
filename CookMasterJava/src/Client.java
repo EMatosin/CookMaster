@@ -7,12 +7,12 @@ public class Client {
     private List<Devis> devis;
     private List<Facture> factures;
     private int fidelite;
+    private List<Evenement> evenements;
+
 
     public String getNom() { return nom; }
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
+    public void setNom(String nom) { this.nom = nom; }
 
     public String getAdresse() {
         return adresse;
@@ -50,5 +50,12 @@ public class Client {
 
     public void setFidelite(int fidelite) { this.fidelite = fidelite; }
 
-    // Autres méthodes getters et setters pour les attributs pertinents
+    public List<Evenement> getEvenements() {
+        return evenements;
+    }
+
+    public void setEvenements(List<Evenement> evenements) {
+        this.evenements = evenements;
+    }
+
 }
