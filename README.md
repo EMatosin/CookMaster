@@ -10,7 +10,7 @@ Android :
 - Application composé pour l'instant de:
     - Une fenetre de connexion et inscription qui permet de vérifier des infos ou d'ne inscrire dans la bdd en localhost (bien créer la table users et les lignes en amont !)
     - Une interface comprenant 4 fragments génériques pour le moment, avec un menu déroulant à gauche et un menu en dessous qui redirige vers les fragments
-    - Sur l'un des fragments se situe une LIstView qui permet l'affichage de quelques aliments et une description plus complète de ceux ci lors d'une interaction (a répéter sur les autres fragments avcec par exemple une ListView pour les différents locaux proposés, les différents chefs disponibles etc..)
+    - Sur l'un des fragments se situe une LIstView qui permet l'affichage de quelques aliments et une description plus complète de ceux ci lors d'une interaction (a répéter sur les autres fragments avec par exemple une ListView pour les différents locaux proposés, les différents chefs disponibles etc..)
 
  A FAIRE
  
@@ -19,16 +19,10 @@ Android :
 
 Java :
 
-- Classes principales crées contenant de nombreuses spécificitées
+- Classes principales crées contenant de nombreuses spécificitées via JOKER ou données pré enregistrées
 - Génération de PDF aléatoires via listes crées en amont pour différents utilisateurs avec de nombreuses spécificités (devis, facture, evenement, abonnement etc...) avec la librairie iTextPdf
 - Génération de différents charts via la librarie JFreeChart
-
-A FAIRE
-
-- Organiser mieux les pdf --> DONE
-- Rajouter des détails dans chaque classes (30 variables selon l'énoncé) --> DONE via Jar FAKER 
-- Essayer de relier le code à une bdd pour récupérer au moins une liste réelle d'utilisateur (mais garder les autres données en aléatoire)
-
+- Interface extremement simple (un seul bouton) via JavaFX pour avoir une interface utilisateur qui génère le PDF
 
 C :
 
