@@ -5,10 +5,8 @@ public class Client {
     private String adresse;
     private List<Abonnement> abonnements;
     private List<Facture> factures;
-    private int fidelite;
     private List<Evenement> evenements;
     private List<Prestation> prestations;
-
 
 
     public String getNom() { return nom; }
@@ -39,14 +37,9 @@ public class Client {
         this.factures = factures;
     }
 
-    public int getFidelite() { return fidelite; }
-
-    public void setFidelite(int fidelite) { this.fidelite = fidelite; }
-
     public List<Evenement> getEvenements() {
         return evenements;
     }
-
     public void setEvenements(List<Evenement> evenements) {
         this.evenements = evenements;
     }
@@ -58,5 +51,6 @@ public class Client {
     public void setPrestations(List<Prestation> prestations) {
         this.prestations = prestations;
     }
+
 
 }

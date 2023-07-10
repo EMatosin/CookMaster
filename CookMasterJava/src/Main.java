@@ -3,6 +3,8 @@
 // (powered by FernFlower decompiler)
 //
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -22,20 +24,27 @@ public class Main extends Application {
         primaryStage.setTitle("Application JavaFX");
         Button generateButton = new Button("Générer le rapport PDF");
         generateButton.setOnAction((event) -> {
-            List<Client> clients = RandomDataGenerator.generateRandomClients(30);
+            List<Client> clients = RandomDataGenerator.generateRandomClients(10);
+            List<Evenement> allEvents = new ArrayList<>();
 
             for (Client client : clients) {
+
                 List<Prestation> prestations = RandomDataGenerator.generateRandomPrestations();
                 List<Evenement> events = RandomDataGenerator.generateRandomEvenement();
                 List<Abonnement> abonnements = RandomDataGenerator.generateRandomAbonnements();
+
                 client.setEvenements(events);
                 client.setPrestations(prestations);
                 client.setAbonnements(abonnements);
+
                 List<Facture> factures = RandomDataGenerator.generateRandomFactures(abonnements, events, prestations);
                 client.setFactures(factures);
+
+                allEvents.addAll(events);
             }
 
-            PDFGenerator.generateReport(clients);
+            PDFGenerator.generateReport(clients, allEvents);
+
         });
         StackPane root = new StackPane();
         root.getChildren().add(generateButton);

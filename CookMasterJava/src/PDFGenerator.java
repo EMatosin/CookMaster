@@ -13,15 +13,20 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
+
+import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartFrame;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.labels.PieSectionLabelGenerator;
+import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -31,7 +36,7 @@ public class PDFGenerator {
     public PDFGenerator() {
     }
 
-    public static void generateReport(List<Client> clients) {
+    public static void generateReport(List<Client> clients, List<Evenement> allevents) {
         Document document = new Document();
 
         try {
@@ -40,6 +45,9 @@ public class PDFGenerator {
             document.open();
             addTitlePage(document);
             document.add(Chunk.NEWLINE);
+
+            List<Integer> dureesAbonnements = new ArrayList<>(); // Liste des durées des abonnements
+
 
             for (Client client : clients) {
                 addTitlePageClient(document, client);
@@ -50,11 +58,20 @@ public class PDFGenerator {
                 addFacturesPage(document, client);
                 addFooter(writer);
                 document.newPage();
+
+                List<Abonnement> abonnements = client.getAbonnements();
+                int dureeAbonnementsTotal = 0;
+
+                for (Abonnement abonnement : abonnements) {
+                    dureeAbonnementsTotal += abonnement.getDuree();
+                }
+
+                dureesAbonnements.add(dureeAbonnementsTotal);
             }
 
-            addClientStatisticsPage(document, clients);
+            addClientStatisticsPage(document, clients, dureesAbonnements);
             document.newPage();
-            document.newPage();
+            addEventStatisticsPage(document, allevents);
             document.newPage();
             document.close();
             System.out.println("Rapport PDF généré avec succès.");
@@ -63,6 +80,7 @@ public class PDFGenerator {
         }
 
     }
+
 
     private static void addTitlePage(Document document) throws DocumentException {
         Paragraph title = new Paragraph("Rapport détaillé des activités sur Cook Fusion", FontFactory.getFont("Helvetica-Oblique", 15.0F));
@@ -204,7 +222,7 @@ public class PDFGenerator {
 
     }
 
-    private static void addClientStatisticsPage(Document document, List<Client> clients) throws DocumentException, IOException {
+    private static void addClientStatisticsPage(Document document, List<Client> clients, List<Integer> dureesAbonnements) throws DocumentException, IOException {
         Paragraph title = new Paragraph("Statistiques des comptes clients", FontFactory.getFont("Helvetica-Bold", 14.0F));
         title.setAlignment(1);
         document.add(title);
@@ -213,11 +231,12 @@ public class PDFGenerator {
         addChartToDocument(document, revenueChart);
         JFreeChart clientTypeChart = createClientTypeChart(clients);
         addChartToDocument(document, clientTypeChart);
-        JFreeChart purchaseFrequencyChart = createPurchaseFrequencyChart(clients);
-        addChartToDocument(document, purchaseFrequencyChart);
-        JFreeChart topCustomersChart = createTopCustomersChart(clients);
+        JFreeChart SubscriptionsChart = createSubscriptionsChart(clients, dureesAbonnements);
+        addChartToDocument(document, SubscriptionsChart);
+        JFreeChart topCustomersChart = createTopCustomersChart(clients, dureesAbonnements);
         addChartToDocument(document, topCustomersChart);
     }
+
 
     private static void addEventStatisticsPage(Document document, List<Evenement> evenements) throws DocumentException, IOException {
         Paragraph title = new Paragraph("Statistiques des événements", FontFactory.getFont("Helvetica-Bold", 14.0F));
@@ -256,107 +275,201 @@ public class PDFGenerator {
 
     private static JFreeChart createRevenueChart(List<Client> clients) {
         DefaultPieDataset dataset = new DefaultPieDataset();
-        dataset.setValue("CA 1", 1000.0);
-        dataset.setValue("CA 2", 2000.0);
-        dataset.setValue("CA 3", 1500.0);
-        dataset.setValue("CA 4", 3000.0);
+
+        // Calculer le montant total de facture pour chaque client
+        for (Client client : clients) {
+            double montantFactureTotal = 0.0;
+
+            for (Facture facture : client.getFactures()) {
+                montantFactureTotal += facture.getMontant();
+            }
+
+            dataset.setValue(client.getNom(), montantFactureTotal);
+        }
+
         JFreeChart chart = ChartFactory.createPieChart("Répartition par CA", dataset, true, true, false);
-        PiePlot plot = (PiePlot)chart.getPlot();
-        plot.setLabelGenerator((PieSectionLabelGenerator)null);
+        PiePlot plot = (PiePlot) chart.getPlot();
+        plot.setLabelFont(new Font("Helvetica", Font.PLAIN, 5));
+        plot.setLabelGenerator(null);
+
         return chart;
     }
 
     private static JFreeChart createClientTypeChart(List<Client> clients) {
-        DefaultPieDataset dataset = new DefaultPieDataset();
-        dataset.setValue("Type 1", 25.0);
-        dataset.setValue("Type 2", 30.0);
-        dataset.setValue("Type 3", 20.0);
-        dataset.setValue("Type 4", 15.0);
-        JFreeChart chart = ChartFactory.createPieChart("Répartition par type de client", dataset, true, true, false);
-        PiePlot plot = (PiePlot)chart.getPlot();
-        plot.setLabelGenerator((PieSectionLabelGenerator)null);
-        return chart;
-    }
+        int countPorteEvenements = 0;
+        int countPortePrestations = 0;
+        int evenEtPrest = 0;
+        int totalCount = clients.size();
 
-    private static JFreeChart createPurchaseFrequencyChart(List<Client> clients) {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue(10.0, "Fréquence", "Janvier");
-        dataset.addValue(15.0, "Fréquence", "Février");
-        dataset.addValue(12.0, "Fréquence", "Mars");
-        dataset.addValue(8.0, "Fréquence", "Avril");
-        dataset.addValue(5.0, "Fréquence", "Mai");
-        dataset.addValue(20.0, "Fréquence", "Juin");
-        JFreeChart chart = ChartFactory.createLineChart("Régularité d'achat", "Mois", "Fréquence", dataset, PlotOrientation.VERTICAL, true, true, false);
-        return chart;
-    }
-
-    private static JFreeChart createTopCustomersChart(List<Client> clients) {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
-        for(int i = 0; i < 5 && i < clients.size(); ++i) {
-            Client client = (Client)clients.get(i);
-            dataset.addValue((double)client.getFidelite(), "Fidélité", client.getNom());
+        for (Client client : clients) {
+            if (client.getPrestations().isEmpty()) {
+                countPorteEvenements++;
+            } else if (client.getEvenements().isEmpty()) {
+                countPortePrestations++;
+            } else {
+                evenEtPrest++;
+            }
         }
 
-        JFreeChart chart = ChartFactory.createBarChart("Top 5 des clients les plus fidèles", "Client", "Fidélité", dataset, PlotOrientation.VERTICAL, true, true, false);
+        double percentagePorteEvenement = (double) countPorteEvenements / totalCount * 100.0;
+        double percentagePortePrestations = (double) countPortePrestations / totalCount * 100.0;
+        double percentageEvenementEtPrestation = (double) evenEtPrest / totalCount * 100.0;
+
+
+        DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
+        dataset.setValue("Porté événements", percentagePorteEvenement);
+        dataset.setValue("Porté prestations", percentagePortePrestations);
+        dataset.setValue("Les deux", percentageEvenementEtPrestation);
+
+
+        JFreeChart chart = ChartFactory.createPieChart("Répartition par type de client", dataset, true, true, false);
+        PiePlot plot = (PiePlot) chart.getPlot();
+        plot.setLabelGenerator(new StandardPieSectionLabelGenerator("{0} - {2}"));
         return chart;
     }
+
+    private static JFreeChart createTopCustomersChart(List<Client> clients, List<Integer> dureesAbonnements) {
+        Map<Client, Integer> dureesMap = new HashMap<>();
+
+        // Associez chaque client à sa durée d'abonnement correspondante
+        for (int i = 0; i < clients.size(); i++) {
+            dureesMap.put(clients.get(i), dureesAbonnements.get(i));
+        }
+
+        // Triez les clients en fonction de leurs durées d'abonnement (dans l'ordre décroissant)
+        List<Client> sortedClients = clients.stream()
+                .sorted(Comparator.comparing(dureesMap::get, Comparator.reverseOrder()))
+                .limit(5)
+                .toList();
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        // Utilisez les clients triés pour créer le graphique
+        for (Client client : sortedClients) {
+            int fidelite = dureesMap.get(client);
+            dataset.addValue((double) fidelite, "Fidélité", client.getNom());
+        }
+
+        JFreeChart chart = ChartFactory.createBarChart(
+                "Top 5 des clients les plus fidèles", "Client", "Niveau de fidélité (en mois)",
+                dataset, PlotOrientation.VERTICAL, true, true, false
+        );
+
+        return chart;
+    }
+
+    private static JFreeChart createSubscriptionsChart(List<Client> clients, List<Integer> dureesAbonnements) {
+        Map<String, Integer> abonnementCounts = new HashMap<>();
+
+        // Count the number of times each abonnement has been taken
+        for (Client client : clients) {
+            List<Abonnement> abonnements = client.getAbonnements();
+            for (Abonnement abonnement : abonnements) {
+                String abonnementType = abonnement.getType();
+                abonnementCounts.put(abonnementType, abonnementCounts.getOrDefault(abonnementType, 0) + 1);
+            }
+        }
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        // Add the abonnement counts to the dataset
+        for (String abonnementType : abonnementCounts.keySet()) {
+            int count = abonnementCounts.get(abonnementType);
+            dataset.addValue((double) count, "Nombre d'abonnements", abonnementType);
+        }
+
+        JFreeChart chart = ChartFactory.createBarChart(
+                "Répartition des abonnements", "Abonnement", "Nombre d'abonnements",
+                dataset, PlotOrientation.VERTICAL, true, true, false
+        );
+
+        return chart;
+    }
+
+
 
     private static JFreeChart createEventTypeChart(List<Evenement> evenements) {
         DefaultPieDataset dataset = new DefaultPieDataset();
-        dataset.setValue("Type 1", 25.0);
-        dataset.setValue("Type 2", 30.0);
-        dataset.setValue("Type 3", 20.0);
-        dataset.setValue("Type 4", 15.0);
+
+        for (Evenement evenement : evenements) {
+            dataset.setValue(evenement.getType(), evenement.getDemande());
+        }
+
         JFreeChart chart = ChartFactory.createPieChart("Répartition par type d'événement", dataset, true, true, false);
-        PiePlot plot = (PiePlot)chart.getPlot();
-        plot.setLabelGenerator((PieSectionLabelGenerator)null);
+        PiePlot plot = (PiePlot) chart.getPlot();
+        plot.setLabelGenerator(null);
+        return chart;
+    }
+
+
+    private static JFreeChart createTopRequestedEventsChart(List<Evenement> allEvents) {
+        List<Evenement> coursStreamEvents = allEvents.stream()
+                .filter(e -> e.getType().equals("Cours/Stream collectif"))
+                .collect(Collectors.toList());
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        for (Evenement evenement : coursStreamEvents) {
+            int reservationCount = evenement.getReservations().size();
+            dataset.addValue(reservationCount, "Occurrences", evenement.getNom());
+        }
+
+        JFreeChart chart = ChartFactory.createBarChart(
+                "Événements les plus fréquents - Cours/Stream collectif",
+                "Événement", "Occurrences",
+                dataset, PlotOrientation.VERTICAL, true, true, false);
+
         return chart;
     }
 
     private static JFreeChart createEventFrequencyChart(List<Evenement> evenements) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue(10.0, "Fréquence", "Janvier");
-        dataset.addValue(15.0, "Fréquence", "Février");
-        dataset.addValue(12.0, "Fréquence", "Mars");
-        dataset.addValue(8.0, "Fréquence", "Avril");
-        dataset.addValue(5.0, "Fréquence", "Mai");
-        dataset.addValue(20.0, "Fréquence", "Juin");
+
+        for (Evenement evenement : evenements) {
+            dataset.addValue(evenement.getDemande(), "Fréquence", evenement.getNom());
+        }
+
         JFreeChart chart = ChartFactory.createLineChart("Fréquence des événements", "Mois", "Fréquence", dataset, PlotOrientation.VERTICAL, true, true, false);
         return chart;
     }
 
-    private static JFreeChart createTopRequestedEventsChart(List<Evenement> evenements) {
+    private static JFreeChart createTofpRequestedEventsChart(List<Evenement> evenements) {
+        // Trier la liste des événements par demande décroissante
+        evenements.sort(Comparator.comparingInt(Evenement::getDemande).reversed());
+
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        for(int i = 0; i < 5 && i < evenements.size(); ++i) {
-            Evenement evenement = (Evenement)evenements.get(i);
-            dataset.addValue((double)evenement.getDemande(), "Demande", evenement.getNom());
+        for (int i = 0; i < 5 && i < evenements.size(); ++i) {
+            Evenement evenement = evenements.get(i);
+            dataset.addValue(evenement.getDemande(), "Demande", evenement.getNom());
         }
 
-        JFreeChart chart = ChartFactory.createBarChart("Top 5 des événements les plus demandés", "Événement", "Demande", dataset, PlotOrientation.VERTICAL, true, true, false);
+        JFreeChart chart = ChartFactory.createBarChart(
+                "Top 5 des événements les plus demandés", "Événement", "Demande",
+                dataset, PlotOrientation.VERTICAL, true, true, false
+        );
+
         return chart;
     }
 
     private static JFreeChart createServiceTypeChart(List<Prestation> prestations) {
         DefaultPieDataset dataset = new DefaultPieDataset();
-        dataset.setValue("Type 1", 25.0);
-        dataset.setValue("Type 2", 30.0);
-        dataset.setValue("Type 3", 20.0);
-        dataset.setValue("Type 4", 15.0);
+
+        for (Prestation prestation : prestations) {
+            dataset.setValue(prestation.getType(), prestation.getNombreReservations());
+        }
+
         JFreeChart chart = ChartFactory.createPieChart("Répartition par type de prestation", dataset, true, true, false);
-        PiePlot plot = (PiePlot)chart.getPlot();
-        plot.setLabelGenerator((PieSectionLabelGenerator)null);
+        PiePlot plot = (PiePlot) chart.getPlot();
+        plot.setLabelGenerator(null);
         return chart;
     }
 
     private static JFreeChart createServiceCostChart(List<Prestation> prestations) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        Iterator var2 = prestations.iterator();
 
-        while(var2.hasNext()) {
-            Prestation prestation = (Prestation)var2.next();
-            //dataset.addValue(prestation.getCout(), "Coût", prestation.getNom());
+        for (Prestation prestation : prestations) {
+            dataset.addValue(prestation.getCost(), "Coût", prestation.getType());
         }
 
         JFreeChart chart = ChartFactory.createBarChart("Répartition par coût de prestation", "Prestation", "Coût", dataset, PlotOrientation.VERTICAL, true, true, false);

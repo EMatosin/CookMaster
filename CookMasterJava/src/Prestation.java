@@ -1,6 +1,7 @@
 public class Prestation {
     private String type;
     private String details;
+    private double cost;
     private int nombreReservations;
 
     public String getType() {
@@ -11,6 +12,9 @@ public class Prestation {
         this.type = type;
     }
 
+    public double getCost() {
+        return cost;
+    }
     public void setCost(double cost) {
     }
 

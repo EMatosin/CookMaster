@@ -77,7 +77,7 @@ public class RandomDataGenerator {
 
     static int generateRandomAbonnementDuree() {
         int minDuree = 1;
-        int maxDuree = 12;
+        int maxDuree = 48;
         return random.nextInt(maxDuree - minDuree + 1) + minDuree;
     }
 
@@ -124,19 +124,24 @@ public class RandomDataGenerator {
     }
 
     public static List<Evenement> generateRandomEvenement() {
-        List<Evenement> events = new ArrayList<>();
-        int numEventTypes = random.nextInt(3) + 1;
+        List<Evenement> evenements = new ArrayList<>();
+        int numEventTypes = random.nextInt(3);
 
-        for(int i = 0; i < numEventTypes; ++i) {
+        for (int i = 0; i < numEventTypes; ++i) {
             Evenement evenement = new Evenement();
-            evenement.setNom(generateRandomVIP());
             evenement.setType(generateRandomEventType());
+
+            switch (evenement.getType()) {
+                case "Entretien VIP" -> evenement.setNom(generateRandomVIP());
+                case "Cours à domicile", "Cours/Stream collectif" -> evenement.setNom(generateRandomEventContent());
+                case "Dégustation/Activité en plein air" -> evenement.setNom(generateRandomEventLocalContent());
+            }
+
             evenement.setReservations(generateRandomReservationsForEventType(evenement.getType()));
             evenement.setDemande(evenement.getReservations().size());
-            events.add(evenement);
+            evenements.add(evenement);
         }
-
-        return events;
+        return evenements;
     }
 
     private static final Map<String, Double> eventTypesAndCosts = new HashMap<>();
@@ -198,7 +203,7 @@ public class RandomDataGenerator {
 
     public static List<Prestation> generateRandomPrestations() {
         List<Prestation> prestations = new ArrayList<>();
-        int numPrestations = random.nextInt(3) + 1;
+        int numPrestations = random.nextInt(3);
 
         for (int i = 0; i < numPrestations; ++i) {
             Prestation prestation = new Prestation();
