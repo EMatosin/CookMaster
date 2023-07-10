@@ -1,14 +1,7 @@
 public class Prestation {
-    private String nom;
     private String type;
-    private double cout;
-    private int frequence;
     private String details;
-
-
-    public String getNom() {
-        return nom;
-    }
+    private int nombreReservations;
 
     public String getType() {
         return type;
@@ -18,16 +11,7 @@ public class Prestation {
         this.type = type;
     }
 
-    public double getCout() {
-        return cout;
-    }
-
-    public int getFrequence() {
-        return frequence;
-    }
-
-    public void setFrequence(int frequence) {
-        this.frequence = frequence;
+    public void setCost(double cost) {
     }
 
     public String getDetails() {
@@ -36,5 +20,19 @@ public class Prestation {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    public int getNombreReservations() {
+        return nombreReservations;
+    }
+
+    public void setNombreReservations(int nombreReservations) {
+        this.nombreReservations = nombreReservations;
+    }
+
+    public int getPrestationDetails() {
+        double prestationTypeCost = RandomDataGenerator.getPrestationTypeCost(getType());
+        int numPrestations = getNombreReservations();
+        return (int) (prestationTypeCost * numPrestations);
     }
 }

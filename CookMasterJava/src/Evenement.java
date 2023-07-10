@@ -14,6 +14,8 @@ public class Evenement {
         this.demande = demande;
     }
 
+
+
     public String getNom() {
         return nom;
     }
@@ -21,6 +23,8 @@ public class Evenement {
     public void setNom(String nom) {
         this.nom = nom;
     }
+
+
 
     public String getType() {
         return type;
@@ -30,12 +34,19 @@ public class Evenement {
         this.type = type;
     }
 
+
+
     public List<Reservation> getReservations() {
         return reservations;
     }
-
     public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
     }
 
+
+    public int getEvenementDetails() {
+        double evenementTypeCost = RandomDataGenerator.getEventTypeCost(getType());
+        int numDemande = getDemande();
+        return (int) (evenementTypeCost * numDemande);
+    }
 }
