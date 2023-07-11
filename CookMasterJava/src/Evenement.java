@@ -4,14 +4,10 @@ import java.util.List;
 public class Evenement {
     private String type;
     private String nom;
+
     private List<Reservation> reservations;
     private int demande;
 
-    public Evenement(String nom, String type) {
-        this.nom = nom;
-        this.type = type;
-        this.reservations = new ArrayList<>();
-    }
 
     public Evenement() {
     }
@@ -31,11 +27,6 @@ public class Evenement {
     public void setNom(String nom) {
         this.nom = nom;
     }
-
-    public void addReservation(Reservation reservation) {
-        reservations.add(reservation);
-    }
-
 
 
     public String getType() {

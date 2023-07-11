@@ -58,7 +58,7 @@ public class RandomDataGenerator {
         return addresses;
     }
 
-    static List<Abonnement> generateRandomAbonnements() {
+    public static List<Abonnement> generateRandomAbonnements() {
         List<Abonnement> abonnements = new ArrayList<>();
         Abonnement abonnement = new Abonnement();
         abonnement.setType(generateRandomAbonnementType());
@@ -123,26 +123,25 @@ public class RandomDataGenerator {
         return factures;
     }
 
+
+
     public static List<Evenement> generateRandomEvenement() {
-        List<Evenement> evenements = new ArrayList<>();
-        int numEventTypes = random.nextInt(3);
+        List<Evenement> events = new ArrayList<>();
+        int numEventTypes = random.nextInt(3) + 1;
 
-        for (int i = 0; i < numEventTypes; ++i) {
+        for(int i = 0; i < numEventTypes; ++i) {
             Evenement evenement = new Evenement();
+            evenement.setNom(generateRandomVIP());
             evenement.setType(generateRandomEventType());
-
-            switch (evenement.getType()) {
-                case "Entretien VIP" -> evenement.setNom(generateRandomVIP());
-                case "Cours à domicile", "Cours/Stream collectif" -> evenement.setNom(generateRandomEventContent());
-                case "Dégustation/Activité en plein air" -> evenement.setNom(generateRandomEventLocalContent());
-            }
-
             evenement.setReservations(generateRandomReservationsForEventType(evenement.getType()));
             evenement.setDemande(evenement.getReservations().size());
-            evenements.add(evenement);
+            events.add(evenement);
         }
-        return evenements;
+
+        return events;
     }
+
+
 
     private static final Map<String, Double> eventTypesAndCosts = new HashMap<>();
 
@@ -164,19 +163,32 @@ public class RandomDataGenerator {
     }
 
     private static String generateRandomVIP() {
-        String[] vip = new String[]{"Philippe Etchebest", "Cyril Lignac", "Alain Ducasse", "Gordon Ramsay", "Stephanie Le Quellec", "Guy Savoy", "Anne-Sophie Pic", "Eric Frechon", "Hélène Darroze", "Ghislaine Arabian", "Pierre Gagnaire", "Thierry Marx", "Olivier Roellinger"};
+        String[] vip = new String[]{"Philippe Etchebest", "Cyril Lignac", "Alain Ducasse", "Gordon Ramsay",
+                "Stephanie Le Quellec", "Guy Savoy", "Anne-Sophie Pic", "Eric Frechon", "Hélène Darroze",
+                "Ghislaine Arabian", "Pierre Gagnaire", "Thierry Marx", "Olivier Roellinger"};
         int index = random.nextInt(vip.length);
         return vip[index];
     }
 
     private static String generateRandomEventContent() {
-        String[] culinaryActivities = new String[]{"Cours de cuisine italienne", "Atelier de pâtisserie française", "Initiation à la cuisine japonaise", "Cours de mixologie", "Cuisine moléculaire", "Atelier de chocolaterie", "Démonstration de cuisine fusion", "Atelier de fabrication de sushi", "Cours de cuisine végétarienne", "Atelier de cuisine méditerranéenne", "Cuisine asiatique : wok et sautés", "Atelier de décoration de gâteaux"};
+        String[] culinaryActivities = new String[]{"Cours de cuisine italienne", "Atelier de pâtisserie française",
+                "Initiation à la cuisine japonaise", "Cours de mixologie", "Cuisine moléculaire",
+                "Atelier de chocolaterie", "Démonstration de cuisine fusion", "Atelier de fabrication de sushi",
+                "Cours de cuisine végétarienne", "Atelier de cuisine méditerranéenne",
+                "Cuisine asiatique : wok et sautés", "Atelier de décoration de gâteaux"};
         int index = random.nextInt(culinaryActivities.length);
         return culinaryActivities[index];
     }
 
     private static String generateRandomEventLocalContent() {
-        String[] culinaryLocalActivities = new String[]{"Visite d'une cave à vin locale avec dégustation", "Excursion à la ferme pour cueillir des fruits et légumes", "Dîner gastronomique mettant en valeur les produits régionaux", "Cours de cuisine traditionnelle de la région", "Marché des producteurs locaux avec dégustation", "Atelier de préparation de plats régionaux", "Balade gastronomique dans les rues de la ville", "Dégustation de spécialités culinaires locales", "Rencontre avec un chef renommé pour une démonstration culinaire", "Exploration des traditions culinaires ancestrales de la région"};
+        String[] culinaryLocalActivities = new String[]{"Visite d'une cave à vin locale avec dégustation",
+                "Excursion à la ferme pour cueillir des fruits et légumes",
+                "Dîner gastronomique mettant en valeur les produits régionaux",
+                "Cours de cuisine traditionnelle de la région", "Marché des producteurs locaux avec dégustation",
+                "Atelier de préparation de plats régionaux", "Balade gastronomique dans les rues de la ville",
+                "Dégustation de spécialités culinaires locales",
+                "Rencontre avec un chef renommé pour une démonstration culinaire",
+                "Exploration des traditions culinaires ancestrales de la région"};
         int index = random.nextInt(culinaryLocalActivities.length);
         return culinaryLocalActivities[index];
     }

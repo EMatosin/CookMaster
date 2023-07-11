@@ -36,7 +36,7 @@ public class PDFGenerator {
     public PDFGenerator() {
     }
 
-    public static void generateReport(List<Client> clients, List<Evenement> allevents) {
+    public static void generateReport(List<Client> clients, List<Evenement> allevents, List<Prestation> allprestations) {
         Document document = new Document();
 
         try {
@@ -72,6 +72,8 @@ public class PDFGenerator {
             addClientStatisticsPage(document, clients, dureesAbonnements);
             document.newPage();
             addEventStatisticsPage(document, allevents);
+            document.newPage();
+            addServiceStatisticsPage(document,allprestations);
             document.newPage();
             document.close();
             System.out.println("Rapport PDF généré avec succès.");
@@ -246,9 +248,9 @@ public class PDFGenerator {
         JFreeChart eventTypesChart = createEventTypeChart(evenements);
         addChartToDocument(document, eventTypesChart);
         JFreeChart eventFrequencyChart = createEventFrequencyChart(evenements);
-        addChartToDocument(document, eventFrequencyChart);
+        //addChartToDocument(document, eventFrequencyChart);
         JFreeChart topRequestedEventsChart = createTopRequestedEventsChart(evenements);
-        addChartToDocument(document, topRequestedEventsChart);
+        //addChartToDocument(document, topRequestedEventsChart);
     }
 
     private static void addServiceStatisticsPage(Document document, List<Prestation> prestations) throws DocumentException, IOException {
@@ -258,8 +260,8 @@ public class PDFGenerator {
         document.add(Chunk.NEWLINE);
         JFreeChart serviceTypesChart = createServiceTypeChart(prestations);
         addChartToDocument(document, serviceTypesChart);
-        JFreeChart serviceCostChart = createServiceCostChart(prestations);
-        addChartToDocument(document, serviceCostChart);
+        //JFreeChart serviceCostChart = createServiceCostChart(prestations);
+        //addChartToDocument(document, serviceCostChart);
         //JFreeChart serviceEventsCountChart = createTopFrequentServicesChart(prestations);
         //addChartToDocument(document, serviceEventsCountChart);
     }
@@ -430,25 +432,6 @@ public class PDFGenerator {
         }
 
         JFreeChart chart = ChartFactory.createLineChart("Fréquence des événements", "Mois", "Fréquence", dataset, PlotOrientation.VERTICAL, true, true, false);
-        return chart;
-    }
-
-    private static JFreeChart createTofpRequestedEventsChart(List<Evenement> evenements) {
-        // Trier la liste des événements par demande décroissante
-        evenements.sort(Comparator.comparingInt(Evenement::getDemande).reversed());
-
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
-        for (int i = 0; i < 5 && i < evenements.size(); ++i) {
-            Evenement evenement = evenements.get(i);
-            dataset.addValue(evenement.getDemande(), "Demande", evenement.getNom());
-        }
-
-        JFreeChart chart = ChartFactory.createBarChart(
-                "Top 5 des événements les plus demandés", "Événement", "Demande",
-                dataset, PlotOrientation.VERTICAL, true, true, false
-        );
-
         return chart;
     }
 

@@ -5,7 +5,13 @@ public class Abonnement {
     private int duree;
     private int cout;
     private LocalDate dateDebut;
+    private static final double DEFAULT_PREMIUM_PRICE = 20.0;
+    private static final double DEFAULT_PRO_PRICE = 10.0;
+    private static final double DEFAULT_STANDARD_PRICE = 3.0;
 
+    private static double premiumPrice = DEFAULT_PREMIUM_PRICE;
+    private static double proPrice = DEFAULT_PRO_PRICE;
+    private static double standardPrice = DEFAULT_STANDARD_PRICE;
 
     public Abonnement() {}
 
@@ -37,17 +43,17 @@ public class Abonnement {
         String typeAbonnement = getType();
         int dureeAbonnement = getDuree();
 
-        int prixUnitaire;
+        double prixUnitaire;
 
         if (typeAbonnement.equals("Premium")) {
-            prixUnitaire = 20;
+            prixUnitaire = premiumPrice;
         } else if (typeAbonnement.equals("Pro")) {
-            prixUnitaire = 10;
+            prixUnitaire = proPrice;
         } else {
-            prixUnitaire = 3;
+            prixUnitaire = standardPrice;
         }
 
-        setCout(prixUnitaire * dureeAbonnement);
+        setCout((int) (prixUnitaire * dureeAbonnement));
         return getCout();
     }
 
@@ -59,5 +65,19 @@ public class Abonnement {
         this.dateDebut = dateDebut;
     }
 
+    public static void setPrixAbonnement(String type, double prix) {
+        if (type.equals("Premium")) {
+            premiumPrice = prix;
+        } else if (type.equals("Pro")) {
+            proPrice = prix;
+        } else if (type.equals("Standard")) {
+            standardPrice = prix;
+        }
+    }
 
+    public static void resetPrixAbonnements() {
+        premiumPrice = DEFAULT_PREMIUM_PRICE;
+        proPrice = DEFAULT_PRO_PRICE;
+        standardPrice = DEFAULT_STANDARD_PRICE;
+    }
 }

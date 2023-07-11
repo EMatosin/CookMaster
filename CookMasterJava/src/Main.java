@@ -1,34 +1,52 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends Application {
-    public Main() {
-    }
-
     public static void main(String[] args) {
         launch(args);
     }
 
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Application JavaFX");
+
+        // Création des éléments de l'interface graphique
+        Label labelClients = new Label("Nombre de clients :");
+        TextField textFieldClients = new TextField();
+        Label labelPremium = new Label("Nouveau prix Premium :");
+        TextField textFieldPremium = new TextField();
+        Label labelPro = new Label("Nouveau prix Pro :");
+        TextField textFieldPro = new TextField();
+        Label labelStandard = new Label("Nouveau prix Standard :");
+        TextField textFieldStandard = new TextField();
         Button generateButton = new Button("Générer le rapport PDF");
-        generateButton.setOnAction((event) -> {
-            List<Client> clients = RandomDataGenerator.generateRandomClients(10);
+
+        // Gestion de l'événement lors du clic sur le bouton
+        generateButton.setOnAction(event -> {
+            // Récupération des valeurs saisies dans les champs de texte
+            int numClients = Integer.parseInt(textFieldClients.getText());
+            int newPricePremium = Integer.parseInt(textFieldPremium.getText());
+            int newPricePro = Integer.parseInt(textFieldPro.getText());
+            int newPriceStandard = Integer.parseInt(textFieldStandard.getText());
+
+            // Modification des prix des abonnements
+            Abonnement.setPrixAbonnement("Premium", newPricePremium);
+            Abonnement.setPrixAbonnement("Pro", newPricePro);
+            Abonnement.setPrixAbonnement("Standard", newPriceStandard);
+
+            // Génération des clients aléatoires avec le nombre spécifié
+            List<Client> clients = RandomDataGenerator.generateRandomClients(numClients);
             List<Evenement> allEvents = new ArrayList<>();
+            List<Prestation> allPrestations = new ArrayList<>();
 
+            // Reste du code pour la génération du rapport PDF
             for (Client client : clients) {
-
                 List<Prestation> prestations = RandomDataGenerator.generateRandomPrestations();
                 List<Evenement> events = RandomDataGenerator.generateRandomEvenement();
                 List<Abonnement> abonnements = RandomDataGenerator.generateRandomAbonnements();
@@ -41,14 +59,21 @@ public class Main extends Application {
                 client.setFactures(factures);
 
                 allEvents.addAll(events);
+                allPrestations.addAll(prestations);
             }
 
-            PDFGenerator.generateReport(clients, allEvents);
-
+            PDFGenerator.generateReport(clients, allEvents, allPrestations);
         });
-        StackPane root = new StackPane();
-        root.getChildren().add(generateButton);
-        Scene scene = new Scene(root, 300.0, 200.0);
+
+        // Création de la mise en page de l'interface graphique
+        VBox root = new VBox(
+                labelClients, textFieldClients,
+                labelPremium, textFieldPremium,
+                labelPro, textFieldPro,
+                labelStandard, textFieldStandard,
+                generateButton);
+        Scene scene = new Scene(root, 300, 200);
+
         primaryStage.setScene(scene);
         primaryStage.show();
     }
